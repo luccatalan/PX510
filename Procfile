@@ -1,1 +1,1 @@
-web: node fingerprint.js
+web: node app.js
