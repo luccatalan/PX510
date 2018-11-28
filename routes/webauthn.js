@@ -96,13 +96,13 @@ router.post('/response', (request, response) => {
         })
     }
 
-    /* ...and origin */
+    /* ...and origin 
     if(clientData.origin !== config.origin) {
         response.json({
             'status': 'failed',
             'message': 'Origins don\'t match!'
         })
-    }
+    } */
 
     let result;
     if(webauthnResp.response.attestationObject !== undefined) {
