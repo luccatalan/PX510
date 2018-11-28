@@ -32,7 +32,7 @@ app.use('/', defaultroutes)
 app.use('/password', passwordauth)
 app.use('/webauthn', webuathnauth)
 
-const port = process.env.PORT; // Heroku port
+const port = process.env.PORT;
 app.listen(port);
 console.log(`Started app on port ${port}`);
 
