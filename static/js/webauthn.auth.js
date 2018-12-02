@@ -42,13 +42,14 @@ $('#register').submit(function(event) {
 
     let username = this.username.value;
     let name     = this.name.value;
+    let password = this.password.value;
 
-    if(!username || !name) {
-        alert('Name or username is missing!')
+    if(!username || !name || !password) {
+        alert('Name or username or password is missing!')
         return
     }
 
-    getMakeCredentialsChallenge({username, name})
+    getMakeCredentialsChallenge({username, name, password})
         .then((response) => {
             let publicKey = preformatMakeCredReq(response);
             return navigator.credentials.create({ publicKey })
@@ -90,13 +91,14 @@ $('#login').submit(function(event) {
     event.preventDefault();
 
     let username = this.username.value;
+    let password = this.password.value;
 
-    if(!username) {
-        alert('Username is missing!')
+    if(!username || !password) {
+        alert('Username or password is missing!')
         return
     }
 
-    getGetAssertionChallenge({username})
+    getGetAssertionChallenge({username, password})
         .then((response) => {
             console.log(response)
             let publicKey = preformatGetAssertReq(response);

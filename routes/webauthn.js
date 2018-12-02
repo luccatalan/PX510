@@ -6,10 +6,10 @@ const router    = express.Router();
 const database  = require('./db');
 
 router.post('/register', (request, response) => {
-    if(!request.body || !request.body.username || !request.body.name) {
+    if(!request.body || !request.body.username || !request.body.name || !request.body.password) {
         response.json({
             'status': 'failed',
-            'message': 'Request missing name or username field!'
+            'message': 'Request missing name or username or password field!'
         })
 
         return
@@ -17,6 +17,7 @@ router.post('/register', (request, response) => {
 
     let username = request.body.username;
     let name     = request.body.name;
+    let password = request.body.password;
 
     if(database[username] && database[username].registered) {
         response.json({
@@ -29,6 +30,7 @@ router.post('/register', (request, response) => {
 
     database[username] = {
         'name': name,
+        'password': password,
         'registered': false,
         'id': utils.randomBase64URLBuffer(),
         'authenticators': []
@@ -44,21 +46,22 @@ router.post('/register', (request, response) => {
 })
 
 router.post('/login', (request, response) => {
-    if(!request.body || !request.body.username) {
+    if(!request.body || !request.body.username || !request.body.password) {
         response.json({
             'status': 'failed',
-            'message': 'Request missing username field!'
+            'message': 'Request missing username or password field!'
         })
 
         return
     }
 
     let username = request.body.username;
+    let password = request.body.password;
 
-    if(!database[username] || !database[username].registered) {
+    if(!database[username] || !database[username].registered || database[username].password !== password) {
         response.json({
             'status': 'failed',
-            'message': `User ${username} does not exist!`
+            'message': `User ${username} does not exist or invalid password !`
         })
 
         return
