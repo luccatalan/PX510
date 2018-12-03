@@ -44,7 +44,7 @@ router.post('/register', (request, response) => {
 
     let text = "Sending Challenge and AppId to user \"" + username + "\"\n";
     text += "Challenge = " + challengeMakeCred.challenge + "\n";
-    text += "AppId = " + database[username].id + "\n";
+    text += "AppId = " + challengeMakeCred.rp.name + "\n";
 
     utils.sendToObs('Server',text);
 
