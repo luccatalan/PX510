@@ -58,10 +58,29 @@ var preformatMakeCredReq = (makeCredReq) => {
  */
 var preformatGetAssertReq = (getAssert) => {
     getAssert.challenge = base64url.decode(getAssert.challenge);
-    
+
     for(let allowCred of getAssert.allowCredentials) {
         allowCred.id = base64url.decode(allowCred.id);
     }
 
     return getAssert
+}
+
+var sendToObs = (tag,text) => {
+
+  var data = {
+    "token": "LEPX510CESTGENIAL",
+    "tag": tag,
+    "text": text.replace(/\n/g, "<br />")
+  }
+
+  $.ajax({
+    type: 'POST',
+    url: 'http://px510-observer.herokuapp.com/sendInformation',
+    //url: 'http://localhost:8080/sendInformation',
+    crossDomain: true,
+    contentType: "application/json",
+    data: JSON.stringify(data)
+  })
+
 }

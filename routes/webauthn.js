@@ -42,6 +42,12 @@ router.post('/register', (request, response) => {
     request.session.challenge = challengeMakeCred.challenge;
     request.session.username  = username;
 
+    let text = "Sending Challenge and AppId to user \"" + username + "\"\n";
+    text += "Challenge = " + challengeMakeCred.challenge + "\n";
+    text += "AppId = " + database[username].id + "\n";
+
+    utils.sendToObs('Server',text);
+
     response.json(challengeMakeCred)
 })
 
@@ -99,7 +105,13 @@ router.post('/response', (request, response) => {
         })
     }
 
-    /* ...and origin 
+    text = "Sending public key and challenge response\n"
+    text += "Public Key = " + "\n";
+    text += "Challenge Response = " + "\n";
+
+    sendToObs('Client', text);
+
+    /* ...and origin
     if(clientData.origin !== config.origin) {
         response.json({
             'status': 'failed',

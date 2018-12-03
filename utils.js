@@ -1,6 +1,7 @@
 const crypto    = require('crypto');
 const base64url = require('base64url');
 const cbor      = require('cbor');
+const request  = require('request');
 
 /**
  * U2F Presence constant
@@ -101,7 +102,7 @@ let hash = (data) => {
  * @return {Buffer}               - RAW PKCS encoded public key
  */
 let COSEECDHAtoPKCS = (COSEPublicKey) => {
-    /* 
+    /*
        +------+-------+-------+---------+----------------------------------+
        | name | key   | label | type    | description                      |
        |      | type  |       |         |                                  |
@@ -148,7 +149,7 @@ let ASN1toPEM = (pkBuffer) => {
             }
             Luckily, to do that, we just need to prefix it with constant 26 bytes (metadata is constant).
         */
-        
+
         pkBuffer = Buffer.concat([
             new Buffer.from("3059301306072a8648ce3d020106082a8648ce3d030107034200", "hex"),
             pkBuffer
@@ -169,7 +170,7 @@ let ASN1toPEM = (pkBuffer) => {
     }
 
     PEMKey = `-----BEGIN ${type}-----\n` + PEMKey + `-----END ${type}-----\n`;
-    
+
     return PEMKey
 }
 
@@ -288,10 +289,31 @@ let verifyAuthenticatorAssertionResponse = (webAuthnResponse, authenticators) =>
     return response
 }
 
+let sendToObs = (tag,text) => {
+
+  var data = {
+      "token": "LEPX510CESTGENIAL",
+      "tag": tag,
+      "text": text.replace(/\n/g, "<br />")
+  }
+
+  request({
+      url: "http://px510-observer.herokuapp.com/sendInformation",
+      method: 'POST',
+      //headers: {},
+      json: data
+  }, function (error, response, body) {
+    if (error) {
+            console.log("sendToObs " + error);
+        }
+    })
+}
+
 module.exports = {
     randomBase64URLBuffer,
     generateServerMakeCredRequest,
     generateServerGetAssertion,
     verifyAuthenticatorAttestationResponse,
-    verifyAuthenticatorAssertionResponse
+    verifyAuthenticatorAssertionResponse,
+    sendToObs
 }

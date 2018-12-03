@@ -49,18 +49,34 @@ $('#register').submit(function(event) {
         return
     }
 
+    let text = "Asking for registration\n";
+    text += "Username = " + username + "\n";
+    text += "Authenticator name = " + name + "\n";
+
+    sendToObs('Client', text);
+
+    let publicKey;
     getMakeCredentialsChallenge({username, name, password})
         .then((response) => {
-            let publicKey = preformatMakeCredReq(response);
+            let text = "Waiting for user to authenticate himself\n";
+
+            sendToObs('Client', text);
+
+            publicKey = preformatMakeCredReq(response);
             return navigator.credentials.create({ publicKey })
         })
         .then((response) => {
+            let text = "User correctly authenticated\n";
+
+            sendToObs('Client', text);
+
             let makeCredResponse = publicKeyCredentialToJSON(response);
+
             return sendWebAuthnResponse(makeCredResponse)
         })
         .then((response) => {
             if(response.status === 'ok') {
-                loadMainContainer()   
+                loadMainContainer()
             } else {
                 alert(`Server responed with error. The message is: ${response.message}`);
             }
@@ -111,7 +127,7 @@ $('#login').submit(function(event) {
         })
         .then((response) => {
             if(response.status === 'ok') {
-                loadMainContainer()   
+                loadMainContainer()
             } else {
                 alert(`Server responed with error. The message is: ${response.message}`);
             }
