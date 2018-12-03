@@ -105,12 +105,6 @@ router.post('/response', (request, response) => {
         })
     }
 
-    text = "Sending public key and challenge response\n"
-    text += "Public Key = " + "\n";
-    text += "Challenge Response = " + "\n";
-
-    sendToObs('Client', text);
-
     /* ...and origin
     if(clientData.origin !== config.origin) {
         response.json({
