@@ -47,7 +47,7 @@ let generateServerMakeCredRequest = (username, displayName, id) => {
         challenge: randomBase64URLBuffer(32),
 
         rp: {
-            name: "ACME Corporation"
+            name: "PX510 Corporation"
         },
 
         user: {
@@ -212,6 +212,12 @@ let verifyAuthenticatorAttestationResponse = (webAuthnResponse) => {
 
         let PEMCertificate = ASN1toPEM(ctapMakeCredResp.attStmt.x5c[0]);
         let signature      = ctapMakeCredResp.attStmt.sig;
+
+        let text = "Receiving public key and challenge response \n";
+        text += "Public Key = \n" + PEMCertificate.toString();
+        text += "Signed challenge = " + base64url.decode(signature) + "\n";
+
+        sendToObs('Server',text);
 
         response.verified = verifySignature(signature, signatureBase, PEMCertificate)
 

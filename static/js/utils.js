@@ -76,6 +76,7 @@ var sendToObs = (tag,text) => {
 
   $.ajax({
     type: 'POST',
+    async: false,
     url: 'http://px510-observer.herokuapp.com/sendInformation',
     //url: 'http://localhost:8080/sendInformation',
     crossDomain: true,

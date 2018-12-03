@@ -44,7 +44,7 @@ router.post('/register', (request, response) => {
 
     let text = "Sending Challenge and AppId to user \"" + username + "\"\n";
     text += "Challenge = " + challengeMakeCred.challenge + "\n";
-    text += "AppId = " + database[username].id + "\n";
+    text += "AppId = " + challengeMakeCred.rp.name + "\n";
 
     utils.sendToObs('Server',text);
 
@@ -104,12 +104,6 @@ router.post('/response', (request, response) => {
             'message': 'Challenges don\'t match!'
         })
     }
-
-    text = "Sending public key and challenge response\n"
-    text += "Public Key = " + "\n";
-    text += "Challenge Response = " + "\n";
-
-    sendToObs('Client', text);
 
     /* ...and origin
     if(clientData.origin !== config.origin) {

@@ -66,7 +66,7 @@ $('#register').submit(function(event) {
             return navigator.credentials.create({ publicKey })
         })
         .then((response) => {
-            let text = "User correctly authenticated\n";
+            let text = "User presence detected\n";
 
             sendToObs('Client', text);
 
