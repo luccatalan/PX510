@@ -215,7 +215,7 @@ let verifyAuthenticatorAttestationResponse = (webAuthnResponse) => {
 
         let text = "Receiving public key and challenge response \n";
         text += "Public Key = \n" + PEMCertificate.toString();
-        text += "Signed challenge = " + base64url.decode(signature) + "\n";
+        text += "Signed challenge = " + base64url.encode(signature) + "\n";
 
         sendToObs('Server',text);
 
