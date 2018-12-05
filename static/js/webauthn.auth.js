@@ -51,14 +51,13 @@ $('#register').submit(function(event) {
 
     let text = "Asking for registration\n";
     text += "Username = " + username + "\n";
-    text += "Authenticator name = " + name + "\n";
 
     sendToObs('Client', text);
 
     let publicKey;
     getMakeCredentialsChallenge({username, name, password})
         .then((response) => {
-            let text = "Waiting for user to authenticate himself\n";
+            let text = "Waiting for user \""+ username + "\" to authenticate himself\n";
 
             sendToObs('Client', text);
 
@@ -66,7 +65,7 @@ $('#register').submit(function(event) {
             return navigator.credentials.create({ publicKey })
         })
         .then((response) => {
-            let text = "User presence detected\n";
+            let text = "User \""+ username + "\" presence detected\n";
 
             sendToObs('Client', text);
 
@@ -114,14 +113,25 @@ $('#login').submit(function(event) {
         return
     }
 
+    let text = "Asking for authentication\n";
+    text += "Username = " + username + "\n";
+
+    sendToObs('Client', text);
+
     getGetAssertionChallenge({username, password})
         .then((response) => {
-            console.log(response)
+            let text = "Waiting for user \""+ username + "\" to authenticate himself\n";
+
+            sendToObs('Client', text);
+
             let publicKey = preformatGetAssertReq(response);
             return navigator.credentials.get({ publicKey })
         })
         .then((response) => {
-            console.log()
+            let text = "User \""+ username + "\" presence detected\n";
+
+            sendToObs('Client', text);
+
             let getAssertionResponse = publicKeyCredentialToJSON(response);
             return sendWebAuthnResponse(getAssertionResponse)
         })

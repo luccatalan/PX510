@@ -42,9 +42,9 @@ router.post('/register', (request, response) => {
     request.session.challenge = challengeMakeCred.challenge;
     request.session.username  = username;
 
-    let text = "Sending Challenge and AppId to user \"" + username + "\"\n";
-    text += "Challenge = " + challengeMakeCred.challenge + "\n";
-    text += "AppId = " + challengeMakeCred.rp.name + "\n";
+    let text = "Sending Challenge and Relying party Id to user \"" + username + "\"\n";
+    text += "<strong>Challenge = " + challengeMakeCred.challenge + "</strong>\n";
+    text += "Relying party Id = " + challengeMakeCred.rp.name + "\n";
 
     utils.sendToObs('Server',text);
 
@@ -78,6 +78,12 @@ router.post('/login', (request, response) => {
 
     request.session.challenge = getAssertion.challenge;
     request.session.username  = username;
+
+    let text = "Sending challenge and credentialId\n";
+    text += "<strong>Challenge = " + getAssertion.challenge + "</strong>\n";
+    text += "CredentialId = " + getAssertion.allowCredentials[0].id + "\n";
+
+    utils.sendToObs('Server',text);
 
     response.json(getAssertion)
 })

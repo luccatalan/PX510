@@ -1,7 +1,8 @@
 const crypto    = require('crypto');
 const base64url = require('base64url');
 const cbor      = require('cbor');
-const request  = require('request');
+const rp        = require('request-promise');
+const request   = require('sync-request');
 
 /**
  * U2F Presence constant
@@ -213,15 +214,23 @@ let verifyAuthenticatorAttestationResponse = (webAuthnResponse) => {
         let PEMCertificate = ASN1toPEM(ctapMakeCredResp.attStmt.x5c[0]);
         let signature      = ctapMakeCredResp.attStmt.sig;
 
+        let publicKeyString = ASN1toPEM(base64url.toBuffer(base64url.encode(publicKey)));
         let text = "Receiving public key and challenge response \n";
-        text += "Public Key = \n" + PEMCertificate.toString();
-        text += "Signed challenge = " + base64url.decode(signature) + "\n";
+        text += "Public Key = \n" + publicKeyString.toString();
+        text += "<strong>Signed challenge = " + base64url.encode(signature) + "</strong>\n";
+
+        let wait = true
 
         sendToObs('Server',text);
 
         response.verified = verifySignature(signature, signatureBase, PEMCertificate)
 
         if(response.verified) {
+            text = "Signed Challenge verified\n";
+            text += "CredentialId = " + base64url.encode(authrDataStruct.credID) + "\n";
+
+            sendToObs('Server',text);
+
             response.authrInfo = {
                 fmt: 'fido-u2f',
                 publicKey: base64url.encode(publicKey),
@@ -282,11 +291,22 @@ let verifyAuthenticatorAssertionResponse = (webAuthnResponse, authenticators) =>
         let publicKey = ASN1toPEM(base64url.toBuffer(authr.publicKey));
         let signature = base64url.toBuffer(webAuthnResponse.response.signature);
 
+        let text = "Receiving challenge response and checking with public key stored\n";
+        text += "Public key used to verify the challenge = \n" + publicKey.toString();
+        text += "<strong>Challenge response = " + base64url.encode(signature) + "</strong>\n";
+
+        sendToObs('Server',text);
+
         response.verified = verifySignature(signature, signatureBase, publicKey)
 
         if(response.verified) {
             if(response.counter <= authr.counter)
                 throw new Error('Authr counter did not increase!');
+
+            text = "Signed Challenge verified\n";
+            text += "New counter value = " + authrDataStruct.counter + "\n";
+
+            sendToObs('Server',text);
 
             authr.counter = authrDataStruct.counter
         }
@@ -303,16 +323,15 @@ let sendToObs = (tag,text) => {
       "text": text.replace(/\n/g, "<br />")
   }
 
-  request({
+  /*rp({
       url: "http://px510-observer.herokuapp.com/sendInformation",
       method: 'POST',
       //headers: {},
       json: data
-  }, function (error, response, body) {
-    if (error) {
-            console.log("sendToObs " + error);
-        }
-    })
+  });*/
+  request('POST', 'http://px510-observer.herokuapp.com/sendInformation', {
+  json: data,
+});
 }
 
 module.exports = {
