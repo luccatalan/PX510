@@ -40,6 +40,10 @@ let sendWebAuthnResponse = (body) => {
 $('#register').submit(function(event) {
     event.preventDefault();
 
+    let text = "<center> <h4> <strong> Begin Registration </strong> </h4> </center>\n";
+
+    sendToObs('Client', text);
+
     let username = this.username.value;
     let name     = this.name.value;
     let password = this.password.value;
@@ -49,7 +53,7 @@ $('#register').submit(function(event) {
         return
     }
 
-    let text = "Asking for registration\n";
+    text = "Asking for registration\n";
     text += "Username = " + username + "\n";
 
     sendToObs('Client', text);
@@ -75,6 +79,10 @@ $('#register').submit(function(event) {
         })
         .then((response) => {
             if(response.status === 'ok') {
+                let text = "<center> <h4> <strong> End Registration </strong> </h4> </center>\n";
+
+                sendToObs('Client', text);
+
                 loadMainContainer()
             } else {
                 alert(`Server responed with error. The message is: ${response.message}`);
@@ -105,6 +113,10 @@ let getGetAssertionChallenge = (formBody) => {
 $('#login').submit(function(event) {
     event.preventDefault();
 
+    let text = "<center> <h4> <strong> Begin Login </strong> </h4> </center>\n";
+
+    sendToObs('Client', text);
+
     let username = this.username.value;
     let password = this.password.value;
 
@@ -113,7 +125,7 @@ $('#login').submit(function(event) {
         return
     }
 
-    let text = "Asking for authentication\n";
+    text = "Asking for authentication\n";
     text += "Username = " + username + "\n";
 
     sendToObs('Client', text);
@@ -137,6 +149,10 @@ $('#login').submit(function(event) {
         })
         .then((response) => {
             if(response.status === 'ok') {
+                let text = "<center> <h4> <strong> End Login </strong> </h4> </center>\n";
+
+                sendToObs('Client', text);
+
                 loadMainContainer()
             } else {
                 alert(`Server responed with error. The message is: ${response.message}`);

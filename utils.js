@@ -63,7 +63,8 @@ let generateServerMakeCredRequest = (username, displayName, id) => {
             {
                 type: "public-key", alg: -7 // "ES256" IANA COSE Algorithms registry
             }
-        ]
+        ],
+        timeout:'120000'
     }
 }
 
@@ -83,7 +84,8 @@ let generateServerGetAssertion = (authenticators) => {
     }
     return {
         challenge: randomBase64URLBuffer(32),
-        allowCredentials: allowCredentials
+        allowCredentials: allowCredentials,
+        timeout:'120000'
     }
 }
 
